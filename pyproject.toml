@@ -10,6 +10,13 @@ readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
 authors = [{ name = "Voice RAG contributors" }]
+
+[project.urls]
+Homepage = "https://github.com/zengxinhanzx-creator/Voice-Rag"
+Repository = "https://github.com/zengxinhanzx-creator/Voice-Rag"
+Documentation = "https://github.com/zengxinhanzx-creator/Voice-Rag/blob/main/SPEC.md"
+Issues = "https://github.com/zengxinhanzx-creator/Voice-Rag/issues"
+
 dependencies = [
   "fastapi>=0.115.0",
   "uvicorn[standard]>=0.32.0",

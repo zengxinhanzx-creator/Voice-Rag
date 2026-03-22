@@ -1,5 +1,9 @@
 # Voice RAG
 
+[![CI](https://github.com/zengxinhanzx-creator/Voice-Rag/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/zengxinhanzx-creator/Voice-Rag/actions/workflows/ci.yml)
+
+**GitHub:** [zengxinhanzx-creator/Voice-Rag](https://github.com/zengxinhanzx-creator/Voice-Rag)
+
 B2B-oriented **voice + text** knowledge pipeline with RAG: ingest calls and documents into a shared vector index, query via [LiteLLM](https://github.com/BerriAI/litellm), cite sources. Product and API behavior are defined in **[SPEC.md](SPEC.md)** (v0.6).
 
 **Status:** P0 text RAG (local `.txt` / `.md`, Chroma, citations) is implemented; call ingest, URL ingest, and admin UI are planned per [docs/IMPLEMENTATION_PLAN.zh.md](docs/IMPLEMENTATION_PLAN.zh.md).
