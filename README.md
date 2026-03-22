@@ -4,6 +4,14 @@ B2B-oriented **voice + text** knowledge pipeline with RAG: ingest calls and docu
 
 **Status:** Specification and planning; implementation follows [docs/IMPLEMENTATION_PLAN.zh.md](docs/IMPLEMENTATION_PLAN.zh.md).
 
+## Development
+
+```bash
+python -m venv .venv && source .venv/bin/activate  # Windows: .venv\Scripts\activate
+pip install -e ".[dev]"
+pytest && ruff check . && ruff format --check .
+```
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
