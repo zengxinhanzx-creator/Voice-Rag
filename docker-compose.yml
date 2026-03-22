@@ -1,0 +1,14 @@
+services:
+  voice-rag:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      VOICERAG_DATA_DIR: /app/data
+    volumes:
+      - voice_rag_data:/app/data
+
+volumes:
+  voice_rag_data:
