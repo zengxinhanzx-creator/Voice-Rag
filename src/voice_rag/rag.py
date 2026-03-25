@@ -7,8 +7,6 @@ import uuid
 from pathlib import Path
 from typing import Any
 
-import litellm
-
 from voice_rag.config import VoiceRAGConfig
 from voice_rag.embed import Embedder
 from voice_rag.models import Answer, Citation
@@ -139,6 +137,8 @@ def query(
     ]
 
     try:
+        import litellm
+
         resp = litellm.completion(
             model=config.llm_model,
             messages=messages,

@@ -25,7 +25,7 @@ def test_query_audio_raises(tmp_path: Path) -> None:
         query("hi", b"bytes", VoiceRAGConfig(data_dir=tmp_path))
 
 
-@patch("voice_rag.rag.litellm.completion")
+@patch("litellm.completion")
 @patch("voice_rag.rag.ChromaVectorStore")
 def test_query_with_hits_filters_citations_to_allowed_ids(
     mock_store_cls: MagicMock,
@@ -70,7 +70,7 @@ def test_query_with_hits_filters_citations_to_allowed_ids(
     assert out.citations[0].snippet == "one"
 
 
-@patch("voice_rag.rag.litellm.completion")
+@patch("litellm.completion")
 @patch("voice_rag.rag.ChromaVectorStore")
 def test_query_llm_failure_returns_no_citations(
     mock_store_cls: MagicMock,

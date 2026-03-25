@@ -1,9 +1,9 @@
 from pathlib import Path
+from unittest.mock import MagicMock
 
 import pytest
 
 from voice_rag.config import VoiceRAGConfig
-from voice_rag.embed import Embedder
 from voice_rag.models import unit_metadata
 from voice_rag.stores.chroma_store import ChromaVectorStore
 
@@ -19,9 +19,11 @@ def tmp_config(tmp_path: Path) -> VoiceRAGConfig:
     )
 
 
-def test_disabled_not_returned_by_default(tmp_config: VoiceRAGConfig) -> None:
-    emb = Embedder(tmp_config)
-    store = ChromaVectorStore(tmp_config, emb)
+def test_disabled_not_returned_by_default(
+    tmp_config: VoiceRAGConfig,
+    fake_embedder: MagicMock,
+) -> None:
+    store = ChromaVectorStore(tmp_config, fake_embedder)
     uid_on = "11111111-1111-1111-1111-111111111111"
     uid_off = "22222222-2222-2222-2222-222222222222"
     store.add_text_units(
@@ -54,10 +56,12 @@ def test_disabled_not_returned_by_default(tmp_config: VoiceRAGConfig) -> None:
     assert uid_off in found2
 
 
-def test_strict_tenant_isolation(tmp_config: VoiceRAGConfig) -> None:
+def test_strict_tenant_isolation(
+    tmp_config: VoiceRAGConfig,
+    fake_embedder: MagicMock,
+) -> None:
     tmp_config.strict_tenant = True
-    emb = Embedder(tmp_config)
-    store = ChromaVectorStore(tmp_config, emb)
+    store = ChromaVectorStore(tmp_config, fake_embedder)
     ta = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
     tb = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
     store.add_text_units(

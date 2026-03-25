@@ -11,9 +11,11 @@ B2B-oriented **voice + text** knowledge pipeline with RAG: ingest calls and docu
 ## Quickstart
 
 1. `cp .env.example .env` and set at least `OPENAI_API_KEY` (or another provider key supported by LiteLLM) if you use cloud LLM generation.
-2. Create a virtualenv and install:
+2. Create a virtualenv, **activate it**, then install:
 
 ```bash
+python -m venv .venv
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"
 ```
 
@@ -52,6 +54,15 @@ Service listens on port **8000**. Vector data persists in the named volume `voic
 ### Legal / content (NFR-11)
 
 **Web crawling, third-party sites, and copyright:** deployment and compliance are your responsibility. This project provides technical knobs (e.g. URL allowlists, timeouts); it does not bypass paywalls or terms of service on your behalf. See SPEC **NFR-11**.
+
+### Troubleshooting（运行不了时）
+
+| 现象 | 处理 |
+|------|------|
+| `ModuleNotFoundError: No module named 'voice_rag'` | 先 `python -m venv .venv`，**激活**虚拟环境后执行 `pip install -e ".[dev]"`，再运行 `voice-rag`。不要只用系统 Python 直接跑脚本。 |
+| 首次 `index-docs` / `ask` 卡住或报 Hugging Face / 连接错误 | 默认 **本地嵌入** 会从 Hugging Face 拉取 `sentence-transformers` 模型，需要能访问 **https://huggingface.co**。网络受限时可：已下载过的机器上设 `HF_HUB_OFFLINE=1`；或改 `VOICERAG_EMBED_MODE=litellm` 并配置 `VOICERAG_EMBED_MODEL` 与对应 API Key。 |
+| `voice-rag ask` 报 LLM / API 错误 | 在 `.env` 中配置 `OPENAI_API_KEY`（或 LiteLLM 支持的其他厂商密钥），与 `VOICERAG_LLM_MODEL` 一致。 |
+| Docker 启动后无法访问 | 确认映射端口 `8000`，且容器内 `VOICERAG_DATA_DIR` 与卷挂载一致；查看 `docker compose logs`。 |
 
 ## Development
 

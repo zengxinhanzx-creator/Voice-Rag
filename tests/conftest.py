@@ -3,10 +3,24 @@
 from __future__ import annotations
 
 from pathlib import Path
+from unittest.mock import MagicMock
 
+import numpy as np
 import pytest
 
 from voice_rag.config import VoiceRAGConfig
+
+# Chroma cosine collections expect fixed embedding width (all-MiniLM-L6-v2 = 384).
+_FAKE_EMBED_DIM = 384
+
+
+@pytest.fixture
+def fake_embedder() -> MagicMock:
+    """Deterministic vectors; no Hugging Face download (offline-safe tests)."""
+    m = MagicMock()
+    m.embed.side_effect = lambda texts: np.ones((len(texts), _FAKE_EMBED_DIM), dtype=np.float32)
+    m.embed_query.side_effect = lambda _t: np.ones(_FAKE_EMBED_DIM, dtype=np.float32)
+    return m
 
 
 @pytest.fixture

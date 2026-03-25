@@ -19,7 +19,17 @@ class Embedder:
         if self._local_model is None:
             from sentence_transformers import SentenceTransformer
 
-            self._local_model = SentenceTransformer(self._config.embed_model)
+            try:
+                self._local_model = SentenceTransformer(self._config.embed_model)
+            except Exception as e:
+                raise RuntimeError(
+                    "Failed to load local embedding model "
+                    f"{self._config.embed_model!r}. "
+                    "Ensure outbound HTTPS to Hugging Face works on first run, "
+                    "or set HF_HUB_OFFLINE=1 if the model is already cached. "
+                    "Alternatively set VOICERAG_EMBED_MODE=litellm and VOICERAG_EMBED_MODEL "
+                    "to an API embedding model (with the right API keys)."
+                ) from e
         return self._local_model
 
     def embed(self, texts: list[str]) -> np.ndarray:

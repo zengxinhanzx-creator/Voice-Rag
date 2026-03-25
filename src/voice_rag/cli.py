@@ -16,7 +16,17 @@ from voice_rag.rag import query as rag_query
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = typer.Typer(help="Voice RAG — index documents and query the vector store.")
+app = typer.Typer(
+    help="Voice RAG — index documents and query the vector store.",
+    pretty_exceptions_enable=False,
+)
+
+
+def _cli_fail(msg: str, hint: str | None = None) -> None:
+    typer.secho(msg, fg=typer.colors.RED, err=True)
+    if hint:
+        typer.secho(hint, err=True)
+    raise typer.Exit(1)
 
 
 @app.command("index-docs")
@@ -30,12 +40,25 @@ def index_docs(
     """Index local documents into the Chroma vector store."""
     config = VoiceRAGConfig.from_env()
     logging.getLogger().setLevel(getattr(logging, config.log_level.upper(), logging.INFO))
-    stats = build_index_from_documents(
-        paths,
-        config,
-        voice_transform=voice_transform,
-        tenant_id=tenant_id,
-    )
+    try:
+        stats = build_index_from_documents(
+            paths,
+            config,
+            voice_transform=voice_transform,
+            tenant_id=tenant_id,
+        )
+    except ModuleNotFoundError as e:
+        _cli_fail(
+            f"Missing dependency: {e}",
+            "Run: pip install -e .   (inside an activated virtualenv)",
+        )
+    except RuntimeError as e:
+        _cli_fail(str(e))
+    except Exception as e:
+        _cli_fail(
+            f"{type(e).__name__}: {e}",
+            "See README «Troubleshooting» (embeddings need network or litellm mode).",
+        )
     typer.echo(
         json.dumps(
             {
@@ -62,6 +85,18 @@ def ask(
     except NotImplementedError as e:
         typer.echo(str(e), err=True)
         raise typer.Exit(2) from e
+    except ModuleNotFoundError as e:
+        _cli_fail(
+            f"Missing dependency: {e}",
+            "Run: pip install -e .   (inside an activated virtualenv)",
+        )
+    except RuntimeError as e:
+        _cli_fail(str(e))
+    except Exception as e:
+        _cli_fail(
+            f"{type(e).__name__}: {e}",
+            "See README «Troubleshooting» (embeddings / LLM keys).",
+        )
     typer.echo(json.dumps(answer.to_json_dict(), indent=2, ensure_ascii=False))
 
 

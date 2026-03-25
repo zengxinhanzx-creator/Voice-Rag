@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from unittest.mock import MagicMock, patch
 
 from voice_rag.config import VoiceRAGConfig
 from voice_rag.index import build_index_from_documents
@@ -16,8 +17,14 @@ def test_build_index_empty_paths_returns_zero_stats(tmp_path: Path) -> None:
     assert stats.duration_ms == 0
 
 
-def test_build_index_one_file_input_output(tmp_path: Path) -> None:
+@patch("voice_rag.index.Embedder")
+def test_build_index_one_file_input_output(
+    mock_embed_cls: MagicMock,
+    tmp_path: Path,
+    fake_embedder: MagicMock,
+) -> None:
     """Input: one .md with known text → Output: 1 doc, chunk count matches chunk_text."""
+    mock_embed_cls.return_value = fake_embedder
     doc = tmp_path / "a.md"
     doc.write_text("alpha beta gamma delta epsilon\n", encoding="utf-8")
     cfg = VoiceRAGConfig(
