@@ -12,7 +12,7 @@ license = { text = "MIT" }
 authors = [{ name = "Voice RAG contributors" }]
 dependencies = [
   "fastapi>=0.115.0",
-  "uvicorn[standard]>=0.32.0",
+  "uvicorn[standard]>=0.44.0",
   "pydantic>=2.10.0",
   "pydantic-settings>=2.6.0",
   "litellm>=1.55.0",
